@@ -1,0 +1,47 @@
+return ListView.builder(
+                  itemCount: todos.length,
+                  itemBuilder: (context, index) {
+                    final todo = todos[index];
+
+                    return Dismissible(
+                      background: Container(
+                        color: Colors.red,
+                      ),
+                        key: Key(todo.id.toString()),
+                        onDismissed: (direction) {
+                          setState(() {
+                            DatabaseHelper.instance.delete(todo.id!);
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('$todo dismissed')));
+                        },
+                        child: CheckboxListTile(
+                          title: Text(todo.task),
+                          value: todo.isCompleted,
+                          onChanged: (bool? newValue) {
+                            setState(() {
+                              final newTodo =
+                                  todo.copyWith(isCompleted: newValue!);
+                              DatabaseHelper.instance.update(newTodo);
+                            });
+                          },
+                        ));
+
+                    // return CheckboxListTile(
+                    //   title: Text(todo.task),
+                    //   value: todo.isCompleted,
+                    //   onChanged: (bool? newValue) {
+                    //     setState(() {
+                    //       final newTodo = todo.copyWith(isCompleted: newValue!);
+                    //       DatabaseHelper.instance.update(newTodo);
+                    //     });
+                    //   },
+                    // );
+                    // return ListTile(
+                    //   title: Text(todo.task),
+                    //   trailing: Icon(
+                    //     todo.isCompleted
+                    //         ? Icons.check_box
+                    //         : Icons.check_box_outline_blank,
+                    //   ),
+                    // );
